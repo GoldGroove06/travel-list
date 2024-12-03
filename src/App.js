@@ -2,14 +2,10 @@ import "./App.css";
 import {useState} from "react"
 
 
-const initialItems = [
-  { id: 1, description: "Passports", quantity: 2, packed: false },
-  { id: 2, description: "Socks", quantity: 12, packed: false },
-  { id: 3, description: "H", quantity: 5, packed: false },
-];
+
 
 function App() {
-  const [items, setItems] = useState(initialItems)
+  const [items, setItems] = useState([])
 
   function onAddItem(newItem) {
     setItems((items) => [...items, newItem])
@@ -30,7 +26,7 @@ function App() {
       <Logo />
       <Form onAddItem={onAddItem}/>
       <PackingList items={items} onDeleteItem={onDeleteItem} onPacked={onPacked}/>
-      <Stats />
+      <Stats items={items}/>
     </div>
   );
 }
@@ -92,10 +88,18 @@ function Item({ item, onDeleteItem, onPacked }) {
     )
 }
 
-function Stats() {
+function Stats({items}) {
+  if (!items.length){
+    return <footer className="stats">
+      <em>Start adding some items to your packing list 🚀</em>
+    </footer>
+  }
+  const totalItems = items.length
+  const packedItems = items.filter((item) => item.packed).length
+  const perItems = Math.round(( packedItems/totalItems ) *100)
   return (
     <footer className="stats">
-      <em>💼 You have X items on your list, and you already packed X (X%)</em>
+      <em>💼 You have {totalItems} items on your list, and you already packed {packedItems} ({perItems}%)</em>
     </footer>
   );
 }
